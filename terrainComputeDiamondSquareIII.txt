@@ -1,0 +1,156 @@
+    #version 430 core
+   
+    layout( std430, binding=1 ) buffer VertBuffer
+    	{
+    	vec4 Positions[ ]; 
+    	};
+    layout(std430, binding = 2) buffer NormalBuffer
+        {
+         vec4 Normals[];
+        };
+
+    layout(std430, binding = 3) buffer CounterBuffer
+    {
+     uint Counter;
+    };
+    layout(std430, binding = 4) buffer SizeBuffer
+    {
+     int Size;
+    };
+    layout( local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
+    
+    layout (rgba32f)  uniform image2D HeightMap;
+
+
+
+    float rand(vec3 co)
+    {
+        return fract(sin(dot(co.xyz ,vec3(12.9898,78.233,43.230))) * 43758.5453);
+    }
+    void main (void)
+    {
+        int  WGidY=int(gl_WorkGroupID.y);
+        int  WGidX=int(gl_WorkGroupID.x);
+        
+      //  uint index=atomicAdd(Counter, 3);
+        int offsetX=0, offsetY=0;
+        offsetX=Size*WGidX;
+        offsetY=Size*WGidY;
+        int size=512;
+        size=Size;
+    //  uint counter=0;
+        ivec2 pos=ivec2(0,0);
+        int wsp=5;
+        pos=ivec2(size/2,size/2);
+       // uint index=atomicAdd(Counter, 24);
+        uint index=atomicAdd(Counter, 24);
+for(int i=0;i<3;i++)
+{
+    for(int j=0;j<3;j++)
+    {
+      // Positions[index+3*i+j].xyzw=imageLoad(HeightMap, ivec2(offsetX+i*(size/2), offsetY+j*(size/2)));
+    }
+}
+
+        int counter=0;
+
+        Positions[index+counter+0].xyzw=imageLoad(HeightMap, ivec2(offsetX+0, offsetY+0));          
+        Positions[index+counter+1].xyzw=imageLoad(HeightMap, ivec2(offsetX+0, offsetY+size/2));     
+        Positions[index+counter+2].xyzw=imageLoad(HeightMap, ivec2(offsetX+size/2, offsetY+0));
+        vec3 viewSpaceNormal = -1*normalize( cross( Positions[index+counter+2].xyz - Positions[index+counter+0].xyz, Positions[index+counter+1].xyz - Positions[index+counter+0].xyz ) );
+        Normals[index+counter+0].xyz=viewSpaceNormal;
+        Normals[index+counter+0].w=0;
+        Normals[index+counter+1].xyz=viewSpaceNormal;
+        Normals[index+counter+1].w=0;
+        Normals[index+counter+2].xyz=viewSpaceNormal;
+        Normals[index+counter+2].w=0;
+        counter+=3;
+
+        Positions[index+counter+0].xyzw=imageLoad(HeightMap, ivec2(offsetX+0,offsetY+ size/2));          
+        Positions[index+counter+1].xyzw=imageLoad(HeightMap, ivec2(offsetX+0,offsetY+ size));            
+        Positions[index+counter+2].xyzw=imageLoad(HeightMap, ivec2(offsetX+size/2, offsetY+size/2));
+        viewSpaceNormal = -1*normalize( cross( Positions[index+counter+2].xyz - Positions[index+counter+0].xyz, Positions[index+counter+1].xyz - Positions[index+counter+0].xyz ) );
+        Normals[index+counter+0].xyz=viewSpaceNormal;
+        Normals[index+counter+0].w=0;
+        Normals[index+counter+1].xyz=viewSpaceNormal;
+        Normals[index+counter+1].w=0;
+        Normals[index+counter+2].xyz=viewSpaceNormal;
+        Normals[index+counter+2].w=0;
+        counter+=3;
+
+        Positions[index+counter+0].xyzw=imageLoad(HeightMap, ivec2(offsetX+size/2,offsetY+ 0));          
+        Positions[index+counter+1].xyzw=imageLoad(HeightMap, ivec2(offsetX+size/2,offsetY+ size/2));     
+        Positions[index+counter+2].xyzw=imageLoad(HeightMap, ivec2(offsetX+size, offsetY+0));
+        viewSpaceNormal = -1*normalize( cross( Positions[index+counter+2].xyz - Positions[index+counter+0].xyz, Positions[index+counter+1].xyz - Positions[index+counter+0].xyz ) );
+        Normals[index+counter+0].xyz=viewSpaceNormal;
+        Normals[index+counter+0].w=0;
+        Normals[index+counter+1].xyz=viewSpaceNormal;
+        Normals[index+counter+1].w=0;
+        Normals[index+counter+2].xyz=viewSpaceNormal;
+        Normals[index+counter+2].w=0;
+        counter+=3;
+
+        Positions[index+counter+0].xyzw=imageLoad(HeightMap, ivec2(offsetX+0,offsetY+ size));          
+        Positions[index+counter+1].xyzw=imageLoad(HeightMap, ivec2(offsetX+size/2,offsetY+ size/2));            
+        Positions[index+counter+2].xyzw=imageLoad(HeightMap, ivec2(offsetX+size/2, offsetY+size));
+        viewSpaceNormal = 1*normalize( cross( Positions[index+counter+2].xyz - Positions[index+counter+0].xyz, Positions[index+counter+1].xyz - Positions[index+counter+0].xyz ) );
+        Normals[index+counter+0].xyz=viewSpaceNormal;
+        Normals[index+counter+0].w=0;
+        Normals[index+counter+1].xyz=viewSpaceNormal;
+        Normals[index+counter+1].w=0;
+        Normals[index+counter+2].xyz=viewSpaceNormal;
+        Normals[index+counter+2].w=0;
+        counter+=3;
+
+        Positions[index+counter+0].xyzw=imageLoad(HeightMap, ivec2(offsetX+size/2,offsetY+ size));          
+        Positions[index+counter+1].xyzw=imageLoad(HeightMap, ivec2(offsetX+size,offsetY+ size/2));            
+        Positions[index+counter+2].xyzw=imageLoad(HeightMap, ivec2(offsetX+size/2,offsetY+ size/2));
+        viewSpaceNormal = -1*normalize( cross( Positions[index+counter+2].xyz - Positions[index+counter+0].xyz, Positions[index+counter+1].xyz - Positions[index+counter+0].xyz ) );
+        Normals[index+counter+0].xyz=viewSpaceNormal;
+        Normals[index+counter+0].w=0;
+        Normals[index+counter+1].xyz=viewSpaceNormal;
+        Normals[index+counter+1].w=0;
+        Normals[index+counter+2].xyz=viewSpaceNormal;
+        Normals[index+counter+2].w=0;
+        counter+=3;
+       
+        Positions[index+counter+0].xyzw=imageLoad(HeightMap, ivec2(offsetX+0,offsetY+ size/2));          
+        Positions[index+counter+1].xyzw=imageLoad(HeightMap, ivec2(offsetX+size/2, offsetY+size/2));            
+        Positions[index+counter+2].xyzw=imageLoad(HeightMap, ivec2(offsetX+size/2,offsetY+ 0));
+        viewSpaceNormal =-1* normalize( cross( Positions[index+counter+2].xyz - Positions[index+counter+0].xyz, Positions[index+counter+1].xyz - Positions[index+counter+0].xyz ) );
+        Normals[index+counter+0].xyz=viewSpaceNormal;
+        Normals[index+counter+0].w=0;
+        Normals[index+counter+1].xyz=viewSpaceNormal;
+        Normals[index+counter+1].w=0;
+        Normals[index+counter+2].xyz=viewSpaceNormal;
+        Normals[index+counter+2].w=0;
+        counter+=3;
+       
+        Positions[index+counter+0].xyzw=imageLoad(HeightMap, ivec2(offsetX+size/2, offsetY+size));          
+        Positions[index+counter+1].xyzw=imageLoad(HeightMap, ivec2(offsetX+size,offsetY+ size/2));            
+        Positions[index+counter+2].xyzw=imageLoad(HeightMap, ivec2(offsetX+size, offsetY+size));
+        viewSpaceNormal = 1*normalize( cross( Positions[index+counter+2].xyz - Positions[index+counter+0].xyz, Positions[index+counter+1].xyz - Positions[index+counter+0].xyz ) );
+        Normals[index+counter+0].xyz=viewSpaceNormal;
+        Normals[index+counter+0].w=0;
+        Normals[index+counter+1].xyz=viewSpaceNormal;
+        Normals[index+counter+1].w=0;
+        Normals[index+counter+2].xyz=viewSpaceNormal;
+        Normals[index+counter+2].w=0;
+        counter+=3;
+       
+        Positions[index+counter+0].xyzw=imageLoad(HeightMap, ivec2(offsetX+size/2, offsetY+size/2));          
+        Positions[index+counter+1].xyzw=imageLoad(HeightMap, ivec2(offsetX+size,offsetY+ size/2));            
+        Positions[index+counter+2].xyzw=imageLoad(HeightMap, ivec2(offsetX+size, offsetY+0));
+        viewSpaceNormal = -1*normalize( cross( Positions[index+counter+2].xyz - Positions[index+counter+0].xyz, Positions[index+counter+1].xyz - Positions[index+counter+0].xyz ) ); 
+        Normals[index+counter+0].xyz=viewSpaceNormal;
+        Normals[index+counter+0].w=0;
+        Normals[index+counter+1].xyz=viewSpaceNormal;
+        Normals[index+counter+1].w=0;
+        Normals[index+counter+2].xyz=viewSpaceNormal;
+        Normals[index+counter+2].w=0;
+        counter+=3;
+
+
+
+
+    }
