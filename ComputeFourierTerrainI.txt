@@ -33,13 +33,14 @@
     layout (rgba32f)  uniform image2D HeightMap;
 
 
-/*
-    float rand(vec2 co)
+
+    float randSimple(vec2 co, float freq, float amplitude)
     { vec2 seed=vec2(1876,100);
         co+=seed;
         float wsp=10;
-        return wsp*fract(sin(dot(co.xy ,vec2(52.9898,12.233))) * 43758.5453)*((Size/512));
-    }*/
+        return amplitude*fract(sin(dot(co.xy ,vec2(52.9898,12.233))) * 43758.5453);
+    }
+    
     //  Simplex 3D Noise 
 //  by Ian McEwan, Ashima Arts
 //
@@ -128,60 +129,21 @@ wsp1=amplitude;
   }
   
   //returnValue=wsp1*length(v-vec3(0,0,0));
-  return  /*returnValue+noiseData.y*/clamp(wsp*(42.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3) ) )),(-1*(wsp1*Size/512)), (1*wsp1*Size/512) );
+  return  clamp(wsp*(42.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3) ) )),(-1*(wsp1)), (1*wsp1) );
   
   
 }
     void main (void)
     {
       int  WGidY=int(gl_WorkGroupID.y);
-        int  WGidX=int(gl_WorkGroupID.x);
-       
-      //  uint index=atomicAdd(Counter, 3);
-        int offsetX=0, offsetY=0;
-        
-        int size=512;
-        size=2*Size;
-        offsetX=size*WGidX;
-        offsetY=size*WGidY;
-    //  uint counter=0;v
-        ivec2 pos=ivec2(0,0);
-        float wsp=1;
-       float amplitude=200;
-        float frequency=100;
-        float h1, h2, h3, h4,h5;
-        h1=0;
-        h2=0;
-        h3=0;
-        h4=0;
-        h5=0;
-        if(Size==512)
-        {
-            h1=0;//rand(vec2(offsetX+0, offsetY+0));
-            h3=0;//rand(vec2(offsetX+0, offsetY+size));
-          //  h3=rand(vec2(offsetX+size, offsetY+size));
-           // h4=rand(vec2(offsetX+size, offsetY+0));
-        //SQUARE
-        imageStore(HeightMap, ivec2(offsetX+0   ,offsetY+0),       vec4(float(offsetX+0)/wsp   ,   h1,float(offsetY+0)/wsp,   1)+TilePosition);
-        imageStore(HeightMap, ivec2(offsetX+0   ,offsetY+size),    vec4(float(offsetX+0)/wsp   ,   h2,float(offsetY+size)/wsp,1)+TilePosition);
-        imageStore(HeightMap, ivec2(offsetX+size,offsetY+size),    vec4(float(offsetX+size)/wsp,   h3,float(offsetY+size)/wsp,1)+TilePosition);
-        imageStore(HeightMap, ivec2(offsetX+size,offsetY+0),       vec4(float(offsetX+size)/wsp,   h4,float(offsetY+0)/wsp,   1)+TilePosition);
-        }
-        /*
-        wylicz y dla srodka ze wzoru
-        */
-        h5=(imageLoad(HeightMap, ivec2(offsetX+0, offsetY+0)).y+
-            imageLoad(HeightMap, ivec2(offsetX+0, offsetY+size)).y+
-            imageLoad(HeightMap, ivec2(offsetX+size, offsetY+size)).y+
-            imageLoad(HeightMap, ivec2(offsetX+size, offsetY+0)).y)/4
-            +rand(ivec2((offsetX+size/2)/wsp, (offsetY+size/2)/wsp)+TilePosition.xz, frequency, amplitude);
-            if(size==1024)
-            {
-                h5+=0;//10;
-            }
-      
-        imageStore(HeightMap, ivec2(offsetX+size/2,offsetY+size/2),    vec4(float(offsetX+size/2)/wsp,h5,float(offsetY+size/2)/wsp,   1)+TilePosition);
-     
+      int  WGidX=int(gl_WorkGroupID.x);
+      float size=1;
+      float frequency=0.5;
+      float amplitude=2;
 
+      float h1=randSimple(vec2(WGidX*size, WGidY*size)+TilePosition.xz, frequency, amplitude);
+      imageStore(HeightMap, ivec2(WGidX  ,WGidY),       vec4(WGidX*size,h1,WGidY*size,0)+TilePosition);
+       
+     
 
     }

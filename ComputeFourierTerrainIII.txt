@@ -11,7 +11,7 @@
 
     layout(std430, binding = 3) buffer CounterBuffer
     {
-     uint Counter;
+     int Counter;
     };
     layout(std430, binding = 4) buffer SizeBuffer
     {
@@ -40,16 +40,13 @@
          int offsetX=0, offsetY=0;
         
         int size=512;
-        size=2*Size;
+        size=2;//2*Size;
         offsetX=size*WGidX;
         offsetY=size*WGidY;
 
       uint counter=0;
-        ivec2 pos=ivec2(0,0);
-        int wsp=5;
-        pos=ivec2(size/2,size/2);
-       // uint index=atomicAdd(Counter, 24);
-       uint index=atomicAdd(Counter, 24);
+      
+       uint index=atomicAdd(Counter, 6);
 for(int i=0;i<3;i++)
 {
     for(int j=0;j<3;j++)
@@ -58,83 +55,58 @@ for(int i=0;i<3;i++)
     }
 }
 /*
-int added0=0;
-int added1=0;
-int added2=0;
+        Positions[index+counter+0].xyzw=imageLoad(HeightMap, ivec2(WGidX, WGidY));          
+        Positions[index+counter+1].xyzw=imageLoad(HeightMap, ivec2(WGidX+1, WGidY));     
+        Positions[index+counter+2].xyzw=imageLoad(HeightMap, ivec2(WGidX, WGidY+1));
+        vec3 viewSpaceNormal = -1*normalize( cross( Positions[index+counter+2].xyz - Positions[index+counter+0].xyz, Positions[index+counter+1].xyz - Positions[index+counter+0].xyz ) );
+        Normals[index+counter+0].xyz=viewSpaceNormal;
+        Normals[index+counter+0].w=0;
+        Normals[index+counter+1].xyz=viewSpaceNormal;
+        Normals[index+counter+1].w=0;
+        Normals[index+counter+2].xyz=viewSpaceNormal;
+        Normals[index+counter+2].w=0;
+        counter+=3;
 
-Positions[index+counter+0].xyzw=imageLoad(HeightMap, ivec2(offsetX+0, offsetY+0));          
-Positions[index+counter+1].xyzw=imageLoad(HeightMap, ivec2(offsetX+0, offsetY+size/2));     
-Positions[index+counter+2].xyzw=imageLoad(HeightMap, ivec2(offsetX+size/2, offsetY+0));
-
-vec4 Pos0=imageLoad(HeightMap, ivec2(offsetX+0, offsetY+0));   
-vec4 Pos1=imageLoad(HeightMap, ivec2(offsetX+0, offsetY+size/2)); 
-vec4 Pos2=imageLoad(HeightMap, ivec2(offsetX+size/2, offsetY+0));
-int i=0;
-for( i;i<counter;i++)
-{
-    if(Positions[i]==Pos0)
-    {
-        added0=1;
-        break;
-    }
-
-}
-/////////////////////
-if(added0==0)
-{
-    Positions[counter+0]=Pos0;
-    Index[index+counter+0]=0;
-}
-else
-{
-    Index[index+counter+0]=i;
-}
-
- i=0;
-for( i;i<counter;i++)
-{
-    if(Positions[i]==Pos1)
-    {
-        added1=1;
-        break;
-    }
-
-}
-//////////////////////////
-if(added1==0)
-{
-    Positions[counter+1]=Pos1;
-    Index[index+counter+1]=1;
-}
-else
-{
-    Index[index+counter+1]=i;
-}
-//////////////////////////
- i=0;
-for( i;i<counter;i++)
-{
-    if(Positions[i]==Pos2)
-    {
-        added2=1;
-        break;
-    }
-
-}
-
-if(added2==0)
-{
-    Positions[counter+2]=Pos2;
-    Index[index+counter+2]=2;
-}
-else
-{
-    Index[index+counter+2]=i;
-}
-////////////////////////////
+        Positions[index+counter+0].xyzw=imageLoad(HeightMap, ivec2(WGidX+1, WGidY+1));          
+        Positions[index+counter+1].xyzw=imageLoad(HeightMap, ivec2(WGidX+1, WGidY));     
+        Positions[index+counter+2].xyzw=imageLoad(HeightMap, ivec2(WGidX, WGidY+1));
+        viewSpaceNormal = -1*normalize( cross( Positions[index+counter+2].xyz - Positions[index+counter+0].xyz, Positions[index+counter+1].xyz - Positions[index+counter+0].xyz ) );
+        Normals[index+counter+0].xyz=viewSpaceNormal;
+        Normals[index+counter+0].w=0;
+        Normals[index+counter+1].xyz=viewSpaceNormal;
+        Normals[index+counter+1].w=0;
+        Normals[index+counter+2].xyz=viewSpaceNormal;
+        Normals[index+counter+2].w=0;
+        counter+=3;
 */
+        Positions[index+counter+0].xyzw=imageLoad(HeightMap, ivec2(WGidX, WGidY)).xwzw;          
+        Positions[index+counter+1].xyzw=imageLoad(HeightMap, ivec2(WGidX+1, WGidY)).xwzw;     
+        Positions[index+counter+2].xyzw=imageLoad(HeightMap, ivec2(WGidX, WGidY+1)).xwzw;
+        vec3 viewSpaceNormal = -1*normalize( cross( Positions[index+counter+2].xyz - Positions[index+counter+0].xyz, Positions[index+counter+1].xyz - Positions[index+counter+0].xyz ) );
+        Normals[index+counter+0].xyz=viewSpaceNormal;
+        Normals[index+counter+0].w=0;
+        Normals[index+counter+1].xyz=viewSpaceNormal;
+        Normals[index+counter+1].w=0;
+        Normals[index+counter+2].xyz=viewSpaceNormal;
+        Normals[index+counter+2].w=0;
+        counter+=3;
+
+        Positions[index+counter+0].xyzw=imageLoad(HeightMap, ivec2(WGidX+1, WGidY+1)).xwzw;          
+        Positions[index+counter+1].xyzw=imageLoad(HeightMap, ivec2(WGidX+1, WGidY)).xwzw;     
+        Positions[index+counter+2].xyzw=imageLoad(HeightMap, ivec2(WGidX, WGidY+1)).xwzw;
+        viewSpaceNormal = -1*normalize( cross( Positions[index+counter+2].xyz - Positions[index+counter+0].xyz, Positions[index+counter+1].xyz - Positions[index+counter+0].xyz ) );
+        Normals[index+counter+0].xyz=viewSpaceNormal;
+        Normals[index+counter+0].w=0;
+        Normals[index+counter+1].xyz=viewSpaceNormal;
+        Normals[index+counter+1].w=0;
+        Normals[index+counter+2].xyz=viewSpaceNormal;
+        Normals[index+counter+2].w=0;
+        counter+=3;
+/*
+
 
          counter=0;
+        
 
         Positions[index+counter+0].xyzw=imageLoad(HeightMap, ivec2(offsetX+0, offsetY+0));          
         Positions[index+counter+1].xyzw=imageLoad(HeightMap, ivec2(offsetX+0, offsetY+size/2));     
@@ -231,7 +203,7 @@ else
         Normals[index+counter+2].xyz=viewSpaceNormal;
         Normals[index+counter+2].w=0;
         counter+=3;
-
+*/
 
 
     }

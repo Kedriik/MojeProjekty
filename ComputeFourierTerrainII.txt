@@ -148,8 +148,8 @@ wsp1=amplitude;
         offsetY=size*WGidY;
     //  uint counter=0;
         ivec2 pos=ivec2(0,0);
-        float wsp=1;
-        float amplitude=200;
+        float wsp=0.01;
+        float amplitude=10000;
         float frequency=100;
 
         float h1, h2, h3, h4,h5;
